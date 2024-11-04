@@ -1,0 +1,17 @@
+services:
+    postgres:
+        image: postgis/postgis:17-3.5
+        container_name: Uber_PG_PGIS
+        restart: always
+        environment:
+            POSTGRES_DB: UberDB
+            POSTGRES_USER: root
+            POSTGRES_PASSWORD: password
+        ports:
+            - "5432:5432"
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+
+volumes:
+    postgres_data:
+        name: postgres_postgis_data # Named volume for easier identification
