@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class DriverMatchingStrategyImpl implements DriverMatchingStrategy {
+public class DriverMatchingHighestRatedDriverStrategy implements DriverMatchingStrategy {
 
     @Override
     public List<Driver> findMatchingDrivers(RideRequestDTO rideRequestDTO) {
