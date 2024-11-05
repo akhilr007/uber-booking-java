@@ -4,9 +4,11 @@ import com.akhil.uber_backend.uber_ride.dto.DriverDTO;
 import com.akhil.uber_backend.uber_ride.dto.RideDTO;
 import com.akhil.uber_backend.uber_ride.dto.RiderDTO;
 import com.akhil.uber_backend.uber_ride.services.DriverService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class DriverServiceImpl implements DriverService {
 
     @Override
