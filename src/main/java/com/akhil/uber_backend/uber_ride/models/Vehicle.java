@@ -18,8 +18,4 @@ public class Vehicle {
 
     @Enumerated(EnumType.STRING)
     private VehicleType vehicleType;
-
-    @OneToOne
-    @JoinColumn(name = "driver_id")
-    private Driver driver;
 }

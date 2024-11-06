@@ -22,6 +22,10 @@ public class Driver {
 
     private Boolean available;
 
+    @OneToOne
+    @JoinColumn(name = "vehicle_id")
+    private Vehicle vehicle;
+
     @Column(columnDefinition = "Geometry(Point, 4326)")
     private Point currentLocation;
 }
