@@ -6,5 +6,4 @@ public class VehicleDTO {
 
     private String name;
     private VehicleType vehicleType;
-    private DriverDTO driverDTO;
 }
