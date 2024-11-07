@@ -31,6 +31,8 @@ public class RideRequest {
     @ManyToOne(fetch = FetchType.LAZY)
     private Rider rider;
 
+    private Double fare;
+
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
