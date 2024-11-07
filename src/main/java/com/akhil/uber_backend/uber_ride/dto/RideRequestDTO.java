@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class RideRequestDTO {
 
-    private Point pickupLocation;
+    private PointDTO pickupLocation;
 
-    private Point dropLocation;
+    private PointDTO dropLocation;
 
     private LocalDateTime requestedTime;
 
