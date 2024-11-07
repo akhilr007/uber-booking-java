@@ -4,10 +4,14 @@ import com.akhil.uber_backend.uber_ride.dto.DriverDTO;
 import com.akhil.uber_backend.uber_ride.dto.RideDTO;
 import com.akhil.uber_backend.uber_ride.dto.RideRequestDTO;
 import com.akhil.uber_backend.uber_ride.dto.RiderDTO;
+import com.akhil.uber_backend.uber_ride.models.Rider;
+import com.akhil.uber_backend.uber_ride.models.User;
 
 import java.util.List;
 
 public interface RiderService {
+
+    Rider createNewRider(User user);
 
     RideRequestDTO requestRide(RideRequestDTO rideRequestDTO);
 

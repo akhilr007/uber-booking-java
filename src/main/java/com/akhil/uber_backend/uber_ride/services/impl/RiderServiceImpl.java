@@ -6,7 +6,10 @@ import com.akhil.uber_backend.uber_ride.dto.RideRequestDTO;
 import com.akhil.uber_backend.uber_ride.dto.RiderDTO;
 import com.akhil.uber_backend.uber_ride.enums.RideRequestStatus;
 import com.akhil.uber_backend.uber_ride.models.RideRequest;
+import com.akhil.uber_backend.uber_ride.models.Rider;
+import com.akhil.uber_backend.uber_ride.models.User;
 import com.akhil.uber_backend.uber_ride.repositories.RideRequestRepository;
+import com.akhil.uber_backend.uber_ride.repositories.RiderRepository;
 import com.akhil.uber_backend.uber_ride.services.RiderService;
 import com.akhil.uber_backend.uber_ride.strategies.DriverMatchingStrategy;
 import com.akhil.uber_backend.uber_ride.strategies.RideFareCalculationStrategy;
@@ -26,6 +29,18 @@ public class RiderServiceImpl implements RiderService {
     private final RideFareCalculationStrategy rideFareCalculationStrategy;
     private final DriverMatchingStrategy driverMatchingStrategy;
     private final RideRequestRepository rideRequestRepository;
+    private final RiderRepository riderRepository;
+
+    @Override
+    public Rider createNewRider(User user) {
+
+        Rider rider = Rider.builder()
+                .user(user)
+                .rating(0.0)
+                .build();
+
+       return riderRepository.save(rider);
+    }
 
     @Override
     public RideRequestDTO requestRide(RideRequestDTO rideRequestDTO) {
