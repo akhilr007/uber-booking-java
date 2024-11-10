@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -18,7 +19,7 @@ public class Wallet {
     @OneToOne(fetch = FetchType.LAZY)
     private User user;
 
-    private Double balance;
+    private BigDecimal balance;
 
     @OneToMany(mappedBy = "wallet", fetch = FetchType.LAZY)
     private List<WalletTransaction> transactions;
