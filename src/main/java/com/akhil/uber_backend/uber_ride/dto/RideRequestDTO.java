@@ -5,8 +5,8 @@ import com.akhil.uber_backend.uber_ride.enums.RideRequestStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.locationtech.jts.geom.Point;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -21,6 +21,8 @@ public class RideRequestDTO {
     private LocalDateTime requestedTime;
 
     private RiderDTO rider;
+
+    private BigDecimal fare;
 
     private PaymentMethod paymentMethod;
 

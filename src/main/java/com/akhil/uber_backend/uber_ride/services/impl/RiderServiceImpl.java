@@ -5,6 +5,7 @@ import com.akhil.uber_backend.uber_ride.dto.RideDTO;
 import com.akhil.uber_backend.uber_ride.dto.RideRequestDTO;
 import com.akhil.uber_backend.uber_ride.dto.RiderDTO;
 import com.akhil.uber_backend.uber_ride.enums.RideRequestStatus;
+import com.akhil.uber_backend.uber_ride.models.Driver;
 import com.akhil.uber_backend.uber_ride.models.RideRequest;
 import com.akhil.uber_backend.uber_ride.models.Rider;
 import com.akhil.uber_backend.uber_ride.models.User;
@@ -13,11 +14,15 @@ import com.akhil.uber_backend.uber_ride.repositories.RiderRepository;
 import com.akhil.uber_backend.uber_ride.services.RiderService;
 import com.akhil.uber_backend.uber_ride.strategies.DriverMatchingStrategy;
 import com.akhil.uber_backend.uber_ride.strategies.RideFareCalculationStrategy;
+import com.akhil.uber_backend.uber_ride.strategies.RideStrategyManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Service
@@ -26,8 +31,7 @@ import java.util.List;
 public class RiderServiceImpl implements RiderService {
 
     private final ModelMapper modelMapper;
-    private final RideFareCalculationStrategy rideFareCalculationStrategy;
-    private final DriverMatchingStrategy driverMatchingStrategy;
+    private final RideStrategyManager rideStrategyManager;
     private final RideRequestRepository rideRequestRepository;
     private final RiderRepository riderRepository;
 
@@ -39,23 +43,28 @@ public class RiderServiceImpl implements RiderService {
                 .rating(0.0)
                 .build();
 
-       return riderRepository.save(rider);
+       return this.riderRepository.save(rider);
     }
 
     @Override
+    @Transactional
     public RideRequestDTO requestRide(RideRequestDTO rideRequestDTO) {
 
-        RideRequest rideRequest = modelMapper.map(rideRequestDTO, RideRequest.class);
+        Rider currentRider = getCurrentRider();
+
+        RideRequest rideRequest = this.modelMapper.map(rideRequestDTO, RideRequest.class);
         rideRequest.setRideRequestStatus(RideRequestStatus.PENDING);
+        rideRequest.setRider(currentRider);
 
-        Double fare = rideFareCalculationStrategy.calculateFare(rideRequest);
-        rideRequest.setFare(fare);
+        BigDecimal fare = this.rideStrategyManager.rideFareCalculationStrategy().calculateFare(rideRequest);
+        rideRequest.setFare(fare.setScale(2, RoundingMode.HALF_UP));
 
-        RideRequest savedRideRequest = rideRequestRepository.save(rideRequest);
+        RideRequest savedRideRequest = this.rideRequestRepository.save(rideRequest);
 
-        driverMatchingStrategy.findMatchingDrivers(rideRequest);
+        List< Driver> drivers = this.rideStrategyManager
+                .driverMatchingStrategy(currentRider.getRating()).findMatchingDrivers(rideRequest);
 
-        return modelMapper.map(savedRideRequest, RideRequestDTO.class);
+        return this.modelMapper.map(savedRideRequest, RideRequestDTO.class);
     }
 
     @Override
@@ -76,5 +85,12 @@ public class RiderServiceImpl implements RiderService {
     @Override
     public List<RideDTO> getAllMyRides() {
         return List.of();
+    }
+
+    @Override
+    public Rider getCurrentRider() {
+        // TODO : implement spring security
+        // Temporary solution
+        return this.riderRepository.findById(2L).orElse(null);
     }
 }
