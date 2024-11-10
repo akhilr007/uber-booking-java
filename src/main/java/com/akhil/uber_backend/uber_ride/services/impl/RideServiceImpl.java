@@ -3,6 +3,7 @@ package com.akhil.uber_backend.uber_ride.services.impl;
 import com.akhil.uber_backend.uber_ride.dto.RideRequestDTO;
 import com.akhil.uber_backend.uber_ride.enums.RideRequestStatus;
 import com.akhil.uber_backend.uber_ride.enums.RideStatus;
+import com.akhil.uber_backend.uber_ride.exceptions.ResourceNotFoundException;
 import com.akhil.uber_backend.uber_ride.models.Driver;
 import com.akhil.uber_backend.uber_ride.models.Ride;
 import com.akhil.uber_backend.uber_ride.models.RideRequest;
@@ -27,7 +28,8 @@ public class RideServiceImpl implements RideService {
 
     @Override
     public Ride getRideById(Long rideId) {
-        return null;
+        return this.rideRepository.findById(rideId)
+                .orElseThrow(() -> new ResourceNotFoundException("Ride not found with ID " + rideId));
     }
 
     @Override
@@ -52,8 +54,9 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public Ride updateRideStatus(Long rideId, RideStatus rideStatus) {
-        return null;
+    public Ride updateRideStatus(Ride ride, RideStatus rideStatus) {
+        ride.setRideStatus(RideStatus.ONGOING);
+        return this.rideRepository.save(ride);
     }
 
     @Override
