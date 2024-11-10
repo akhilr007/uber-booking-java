@@ -6,6 +6,8 @@ import com.akhil.uber_backend.uber_ride.strategies.RideFareCalculationStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 @RequiredArgsConstructor
 public class RideFareDefaultCalculationStrategy implements RideFareCalculationStrategy {
@@ -13,10 +15,10 @@ public class RideFareDefaultCalculationStrategy implements RideFareCalculationSt
     private final DistanceService distanceService;
 
     @Override
-    public double calculateFare(RideRequest rideRequest) {
+    public BigDecimal calculateFare(RideRequest rideRequest) {
 
-        double distance = distanceService.calculateDistance(rideRequest.getPickupLocation(), rideRequest.getDropLocation());
+        double distance = this.distanceService.calculateDistance(rideRequest.getPickupLocation(), rideRequest.getDropLocation());
 
-        return distance * RIDE_FARE_MULTIPLIER;
+        return new BigDecimal(distance * RIDE_FARE_MULTIPLIER);
     }
 }
