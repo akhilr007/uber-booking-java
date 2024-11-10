@@ -1,10 +1,11 @@
 package com.akhil.uber_backend.uber_ride.models;
 
 import com.akhil.uber_backend.uber_ride.enums.PaymentMethod;
-import com.akhil.uber_backend.uber_ride.enums.RideRequestStatus;
 import com.akhil.uber_backend.uber_ride.enums.RideStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.locationtech.jts.geom.Point;
@@ -15,6 +16,8 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Ride {
 
     @Id
@@ -43,6 +46,8 @@ public class Ride {
     private RideStatus rideStatus;
 
     private BigDecimal fare;
+
+    private String otp;
 
     private LocalDateTime startedAt;
 

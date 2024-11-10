@@ -12,8 +12,6 @@ import com.akhil.uber_backend.uber_ride.models.User;
 import com.akhil.uber_backend.uber_ride.repositories.RideRequestRepository;
 import com.akhil.uber_backend.uber_ride.repositories.RiderRepository;
 import com.akhil.uber_backend.uber_ride.services.RiderService;
-import com.akhil.uber_backend.uber_ride.strategies.DriverMatchingStrategy;
-import com.akhil.uber_backend.uber_ride.strategies.RideFareCalculationStrategy;
 import com.akhil.uber_backend.uber_ride.strategies.RideStrategyManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +61,8 @@ public class RiderServiceImpl implements RiderService {
 
         List< Driver> drivers = this.rideStrategyManager
                 .driverMatchingStrategy(currentRider.getRating()).findMatchingDrivers(rideRequest);
+
+        // TODO : send notification to all drivers
 
         return this.modelMapper.map(savedRideRequest, RideRequestDTO.class);
     }

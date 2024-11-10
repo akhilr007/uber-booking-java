@@ -3,6 +3,7 @@ package com.akhil.uber_backend.uber_ride.controllers;
 import com.akhil.uber_backend.uber_ride.dto.RideRequestDTO;
 import com.akhil.uber_backend.uber_ride.services.RiderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,9 @@ public class RiderController {
     @PostMapping("/requestRide")
     public ResponseEntity<RideRequestDTO> requestRide(@RequestBody RideRequestDTO rideRequestDTO){
 
-        return ResponseEntity.ok(this.riderService.requestRide(rideRequestDTO));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(this.riderService.requestRide(rideRequestDTO));
 
     }
 }

@@ -2,16 +2,17 @@ package com.akhil.uber_backend.uber_ride.dto;
 
 import com.akhil.uber_backend.uber_ride.enums.PaymentMethod;
 import com.akhil.uber_backend.uber_ride.enums.RideStatus;
-import com.akhil.uber_backend.uber_ride.models.Driver;
-import org.locationtech.jts.geom.Point;
+import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Data
 public class RideDTO {
 
-    private Point pickupLocation;
+    private PointDTO pickupLocation;
 
-    private Point dropLocation;
+    private PointDTO dropLocation;
 
     private LocalDateTime createdTime;
 
@@ -19,11 +20,13 @@ public class RideDTO {
 
     private DriverDTO driver;
 
+    private String otp;
+
     private PaymentMethod paymentMethod;
 
     private RideStatus rideStatus;
 
-    private Double fare;
+    private BigDecimal fare;
 
     private LocalDateTime startedAt;
 

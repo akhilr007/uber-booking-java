@@ -1,16 +1,16 @@
 package com.akhil.uber_backend.uber_ride.advices;
 
+import com.akhil.uber_backend.uber_ride.exceptions.DriverNotAvailableException;
 import com.akhil.uber_backend.uber_ride.exceptions.ResourceNotFoundException;
+import com.akhil.uber_backend.uber_ride.exceptions.RideRequestException;
 import com.akhil.uber_backend.uber_ride.exceptions.RuntimeConflictException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -57,6 +57,24 @@ public class GlobalExceptionHandler {
                 .subErrors(errors)
                 .build();
 
+        return buildErrorResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(RideRequestException.class)
+    public ResponseEntity<ApiResponse<?>> handleRideRequestException(RideRequestException exception){
+        ApiError apiError = ApiError.builder()
+                .httpStatus(HttpStatus.CONFLICT)
+                .message(exception.getLocalizedMessage())
+                .build();
+        return buildErrorResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(DriverNotAvailableException.class)
+    public ResponseEntity<ApiResponse<?>> handleRideRequestException(DriverNotAvailableException exception){
+        ApiError apiError = ApiError.builder()
+                .httpStatus(HttpStatus.NOT_ACCEPTABLE)
+                .message(exception.getLocalizedMessage())
+                .build();
         return buildErrorResponseEntity(apiError);
     }
 

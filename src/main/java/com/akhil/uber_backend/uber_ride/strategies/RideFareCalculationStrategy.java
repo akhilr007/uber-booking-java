@@ -1,6 +1,5 @@
 package com.akhil.uber_backend.uber_ride.strategies;
 
-import com.akhil.uber_backend.uber_ride.dto.RideRequestDTO;
 import com.akhil.uber_backend.uber_ride.models.RideRequest;
 
 import java.math.BigDecimal;

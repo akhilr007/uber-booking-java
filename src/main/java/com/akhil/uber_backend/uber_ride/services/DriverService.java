@@ -3,12 +3,13 @@ package com.akhil.uber_backend.uber_ride.services;
 import com.akhil.uber_backend.uber_ride.dto.DriverDTO;
 import com.akhil.uber_backend.uber_ride.dto.RideDTO;
 import com.akhil.uber_backend.uber_ride.dto.RiderDTO;
+import com.akhil.uber_backend.uber_ride.models.Driver;
 
 import java.util.List;
 
 public interface DriverService {
 
-    RideDTO acceptRide(Long rideId);
+    RideDTO acceptRide(Long rideRequestId);
 
     RideDTO cancelRide(Long rideId);
 
@@ -21,4 +22,6 @@ public interface DriverService {
     DriverDTO getMyProfile();
 
     List<RideDTO> getAllMyRides();
+
+    Driver getCurrentDriver();
 }

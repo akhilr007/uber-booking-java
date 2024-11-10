@@ -4,6 +4,7 @@ import com.akhil.uber_backend.uber_ride.dto.RideRequestDTO;
 import com.akhil.uber_backend.uber_ride.enums.RideStatus;
 import com.akhil.uber_backend.uber_ride.models.Driver;
 import com.akhil.uber_backend.uber_ride.models.Ride;
+import com.akhil.uber_backend.uber_ride.models.RideRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -13,7 +14,7 @@ public interface RideService {
 
     void matchWithDrivers(RideRequestDTO rideRequestDTO);
 
-    Ride createNewRide(RideRequestDTO rideRequestDTO, Driver driver);
+    Ride createNewRide(RideRequest rideRequest, Driver driver);
 
     Ride updateRideStatus(Long rideId, RideStatus rideStatus);
 
