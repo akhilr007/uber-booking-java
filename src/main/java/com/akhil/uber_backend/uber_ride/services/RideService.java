@@ -12,8 +12,6 @@ public interface RideService {
 
     Ride getRideById(Long rideId);
 
-    void matchWithDrivers(RideRequestDTO rideRequestDTO);
-
     Ride createNewRide(RideRequest rideRequest, Driver driver);
 
     Ride updateRideStatus(Ride ride, RideStatus rideStatus);

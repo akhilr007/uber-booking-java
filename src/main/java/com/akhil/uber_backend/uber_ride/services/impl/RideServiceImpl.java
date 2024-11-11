@@ -33,11 +33,6 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public void matchWithDrivers(RideRequestDTO rideRequestDTO) {
-
-    }
-
-    @Override
     public Ride createNewRide(RideRequest rideRequest, Driver driver) {
 
         rideRequest.setRideRequestStatus(RideRequestStatus.CONFIRMED);
