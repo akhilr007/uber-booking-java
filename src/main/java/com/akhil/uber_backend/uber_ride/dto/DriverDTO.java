@@ -12,4 +12,5 @@ public class DriverDTO {
     private UserDTO user;
     private Double rating;
     private VehicleDTO vehicle;
+    private Boolean available;
 }

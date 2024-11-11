@@ -59,7 +59,23 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public RideDTO cancelRide(Long rideId) {
-        return null;
+
+        Ride ride = this.rideService.getRideById(rideId);
+
+        Driver driver = getCurrentDriver();
+        if(!driver.equals(ride.getDriver())){
+            throw new RuntimeException("Driver cannot cancel the ride as he did not accepted it earlier");
+        }
+
+        if(!ride.getRideStatus().equals(RideStatus.CONFIRMED)){
+            throw new RuntimeException("Ride cannot be cancelled, Invalid status: " + ride.getRideStatus());
+        }
+
+        this.rideService.updateRideStatus(ride, RideStatus.CANCELLED);
+        driver.setAvailable(true);
+        this.driverRepository.save(driver);
+
+        return this.modelMapper.map(ride, RideDTO.class);
     }
 
     @Override
@@ -97,7 +113,8 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public DriverDTO getMyProfile() {
-        return null;
+        Driver currentDriver = this.getCurrentDriver();
+        return this.modelMapper.map(currentDriver, DriverDTO.class);
     }
 
     @Override

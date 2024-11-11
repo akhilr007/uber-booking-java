@@ -50,7 +50,7 @@ public class RideServiceImpl implements RideService {
 
     @Override
     public Ride updateRideStatus(Ride ride, RideStatus rideStatus) {
-        ride.setRideStatus(RideStatus.ONGOING);
+        ride.setRideStatus(rideStatus);
         return this.rideRepository.save(ride);
     }
 
