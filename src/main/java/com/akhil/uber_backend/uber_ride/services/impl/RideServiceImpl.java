@@ -7,6 +7,7 @@ import com.akhil.uber_backend.uber_ride.exceptions.ResourceNotFoundException;
 import com.akhil.uber_backend.uber_ride.models.Driver;
 import com.akhil.uber_backend.uber_ride.models.Ride;
 import com.akhil.uber_backend.uber_ride.models.RideRequest;
+import com.akhil.uber_backend.uber_ride.models.Rider;
 import com.akhil.uber_backend.uber_ride.repositories.RideRepository;
 import com.akhil.uber_backend.uber_ride.services.RideRequestService;
 import com.akhil.uber_backend.uber_ride.services.RideService;
@@ -55,13 +56,13 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public Page<Ride> getAllRidesOfRider(Long riderId, PageRequest pageRequest) {
-        return null;
+    public Page<Ride> getAllRidesOfRider(Rider rider, PageRequest pageRequest) {
+        return this.rideRepository.findByRider(rider, pageRequest);
     }
 
     @Override
-    public Page<Ride> getAllRidesOfDriver(Long driverId, PageRequest pageRequest) {
-        return null;
+    public Page<Ride> getAllRidesOfDriver(Driver driver, PageRequest pageRequest) {
+        return this.rideRepository.findByDriver(driver, pageRequest);
     }
 
     private String generateRandomOTP(){
