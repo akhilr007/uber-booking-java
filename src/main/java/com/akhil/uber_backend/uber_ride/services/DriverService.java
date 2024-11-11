@@ -4,6 +4,8 @@ import com.akhil.uber_backend.uber_ride.dto.DriverDTO;
 import com.akhil.uber_backend.uber_ride.dto.RideDTO;
 import com.akhil.uber_backend.uber_ride.dto.RiderDTO;
 import com.akhil.uber_backend.uber_ride.models.Driver;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
@@ -21,7 +23,7 @@ public interface DriverService {
 
     DriverDTO getMyProfile();
 
-    List<RideDTO> getAllMyRides();
+    Page<RideDTO> getAllMyRides(PageRequest pageRequest);
 
     Driver getCurrentDriver();
 }

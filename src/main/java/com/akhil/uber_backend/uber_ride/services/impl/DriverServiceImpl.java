@@ -17,6 +17,8 @@ import com.akhil.uber_backend.uber_ride.services.RideRequestService;
 import com.akhil.uber_backend.uber_ride.services.RideService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -118,8 +120,11 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public List<RideDTO> getAllMyRides() {
-        return List.of();
+    public Page<RideDTO> getAllMyRides(PageRequest pageRequest) {
+
+        Driver driver = this.getCurrentDriver();
+        return this.rideService.getAllRidesOfDriver(driver.getId(), pageRequest)
+                .map(ride -> this.modelMapper.map(ride, RideDTO.class));
     }
 
     @Override
