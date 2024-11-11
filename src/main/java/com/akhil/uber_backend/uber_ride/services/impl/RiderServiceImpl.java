@@ -98,7 +98,8 @@ public class RiderServiceImpl implements RiderService {
 
     @Override
     public RiderDTO getMyProfile() {
-        return null;
+        Rider rider = this.getCurrentRider();
+        return this.modelMapper.map(rider, RiderDTO.class);
     }
 
     @Override
