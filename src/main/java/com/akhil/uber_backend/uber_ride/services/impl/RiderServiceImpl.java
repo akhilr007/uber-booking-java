@@ -5,12 +5,12 @@ import com.akhil.uber_backend.uber_ride.dto.RideDTO;
 import com.akhil.uber_backend.uber_ride.dto.RideRequestDTO;
 import com.akhil.uber_backend.uber_ride.dto.RiderDTO;
 import com.akhil.uber_backend.uber_ride.enums.RideRequestStatus;
-import com.akhil.uber_backend.uber_ride.models.Driver;
-import com.akhil.uber_backend.uber_ride.models.RideRequest;
-import com.akhil.uber_backend.uber_ride.models.Rider;
-import com.akhil.uber_backend.uber_ride.models.User;
+import com.akhil.uber_backend.uber_ride.enums.RideStatus;
+import com.akhil.uber_backend.uber_ride.models.*;
 import com.akhil.uber_backend.uber_ride.repositories.RideRequestRepository;
 import com.akhil.uber_backend.uber_ride.repositories.RiderRepository;
+import com.akhil.uber_backend.uber_ride.services.DriverService;
+import com.akhil.uber_backend.uber_ride.services.RideService;
 import com.akhil.uber_backend.uber_ride.services.RiderService;
 import com.akhil.uber_backend.uber_ride.strategies.RideStrategyManager;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +32,8 @@ public class RiderServiceImpl implements RiderService {
     private final RideStrategyManager rideStrategyManager;
     private final RideRequestRepository rideRequestRepository;
     private final RiderRepository riderRepository;
+    private final RideService rideService;
+    private final DriverService driverService;
 
     @Override
     public Rider createNewRider(User user) {
@@ -69,7 +71,22 @@ public class RiderServiceImpl implements RiderService {
 
     @Override
     public RideDTO cancelRide(Long rideId) {
-        return null;
+
+        Rider rider = this.getCurrentRider();
+        Ride ride = this.rideService.getRideById(rideId);
+
+        if(!rider.equals(ride.getRider())){
+            throw new IllegalArgumentException("Rider cant cancel the ride as it was not booked by him/her");
+        }
+
+        if(!ride.getRideStatus().equals(RideStatus.CONFIRMED)){
+            throw new RuntimeException("Ride cannot be cancelled, Invalid status: " + ride.getRideStatus());
+        }
+
+        Ride cancelledRide = this.rideService.updateRideStatus(ride, RideStatus.CANCELLED);
+        this.driverService.updateDriverAvailability(ride.getDriver(), true);
+
+        return this.modelMapper.map(cancelledRide, RideDTO.class);
     }
 
     @Override
