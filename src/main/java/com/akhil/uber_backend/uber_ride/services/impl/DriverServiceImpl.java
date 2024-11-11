@@ -51,8 +51,7 @@ public class DriverServiceImpl implements DriverService {
                     + currentDriver.getId());
         }
 
-        currentDriver.setAvailable(false);
-        Driver savedDriver = this.driverRepository.save(currentDriver);
+        Driver savedDriver = this.updateDriverAvailability(currentDriver, false);
 
         Ride ride = this.rideService.createNewRide(rideRequest, savedDriver);
 
@@ -74,8 +73,7 @@ public class DriverServiceImpl implements DriverService {
         }
 
         this.rideService.updateRideStatus(ride, RideStatus.CANCELLED);
-        driver.setAvailable(true);
-        this.driverRepository.save(driver);
+        this.updateDriverAvailability(driver, true);
 
         return this.modelMapper.map(ride, RideDTO.class);
     }
@@ -131,5 +129,11 @@ public class DriverServiceImpl implements DriverService {
     public Driver getCurrentDriver() {
         return this.driverRepository.findById(1L)
                 .orElseThrow(() -> new ResourceNotFoundException("Current driver not found"));
+    }
+
+    @Override
+    public Driver updateDriverAvailability(Driver driver, boolean available) {
+        driver.setAvailable(available);
+        return this.driverRepository.save(driver);
     }
 }
