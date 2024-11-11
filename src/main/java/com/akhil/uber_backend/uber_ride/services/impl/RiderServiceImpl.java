@@ -16,6 +16,8 @@ import com.akhil.uber_backend.uber_ride.strategies.RideStrategyManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,8 +102,11 @@ public class RiderServiceImpl implements RiderService {
     }
 
     @Override
-    public List<RideDTO> getAllMyRides() {
-        return List.of();
+    public Page<RideDTO> getAllMyRides(PageRequest pageRequest) {
+
+        Rider rider = this.getCurrentRider();
+        return this.rideService.getAllRidesOfRider(rider.getId(), pageRequest)
+                .map(ride -> this.modelMapper.map(ride, RideDTO.class));
     }
 
     @Override
