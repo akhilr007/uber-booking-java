@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 public interface WalletService {
 
-    Wallet addMoneyToWallet(Long userId, BigDecimal amount);
+    Wallet addMoneyToWallet(User user, BigDecimal amount);
 
     void withdrawMoneyFromWallet();
 
