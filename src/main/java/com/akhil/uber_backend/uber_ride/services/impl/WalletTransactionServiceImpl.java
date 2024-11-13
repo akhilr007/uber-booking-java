@@ -1,6 +1,5 @@
 package com.akhil.uber_backend.uber_ride.services.impl;
 
-import com.akhil.uber_backend.uber_ride.dto.WalletTransactionDTO;
 import com.akhil.uber_backend.uber_ride.models.WalletTransaction;
 import com.akhil.uber_backend.uber_ride.repositories.WalletTransactionRepository;
 import com.akhil.uber_backend.uber_ride.services.WalletTransactionService;
@@ -16,9 +15,8 @@ public class WalletTransactionServiceImpl implements WalletTransactionService {
     private final ModelMapper modelMapper;
 
     @Override
-    public void createNewWalletTransaction(WalletTransactionDTO walletTransactionDTO) {
+    public void createNewWalletTransaction(WalletTransaction walletTransaction) {
 
-        WalletTransaction walletTransaction = this.modelMapper.map(walletTransactionDTO, WalletTransaction.class);
         this.walletTransactionRepository.save(walletTransaction);
     }
 }
