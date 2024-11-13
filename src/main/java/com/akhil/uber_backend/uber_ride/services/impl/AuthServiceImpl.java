@@ -9,6 +9,7 @@ import com.akhil.uber_backend.uber_ride.models.User;
 import com.akhil.uber_backend.uber_ride.repositories.UserRepository;
 import com.akhil.uber_backend.uber_ride.services.AuthService;
 import com.akhil.uber_backend.uber_ride.services.RiderService;
+import com.akhil.uber_backend.uber_ride.services.WalletService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -26,6 +27,7 @@ public class AuthServiceImpl implements AuthService {
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
     private final RiderService riderService;
+    private final WalletService walletService;
 
     @Override
     public String login(String email, String password) {
@@ -47,7 +49,8 @@ public class AuthServiceImpl implements AuthService {
         User savedUser = userRepository.save(user);
 
         riderService.createNewRider(user);
-        // TODO all wallet related service
+        
+        walletService.createNewWallet(savedUser);
 
         return modelMapper.map(savedUser, UserDTO.class);
     }
