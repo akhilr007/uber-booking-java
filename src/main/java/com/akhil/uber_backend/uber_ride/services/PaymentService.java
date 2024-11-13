@@ -6,7 +6,7 @@ import com.akhil.uber_backend.uber_ride.models.Ride;
 
 public interface PaymentService {
 
-    void processPayment(Payment payment);
+    void processPayment(Ride ride);
 
     Payment createNewPayment(Ride ride);
 

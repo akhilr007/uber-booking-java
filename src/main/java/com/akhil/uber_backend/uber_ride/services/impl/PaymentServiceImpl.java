@@ -1,6 +1,7 @@
 package com.akhil.uber_backend.uber_ride.services.impl;
 
 import com.akhil.uber_backend.uber_ride.enums.PaymentStatus;
+import com.akhil.uber_backend.uber_ride.exceptions.ResourceNotFoundException;
 import com.akhil.uber_backend.uber_ride.models.Payment;
 import com.akhil.uber_backend.uber_ride.models.Ride;
 import com.akhil.uber_backend.uber_ride.repositories.PaymentRepository;
@@ -17,7 +18,10 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentStrategyManager paymentStrategyManager;
 
     @Override
-    public void processPayment(Payment payment) {
+    public void processPayment(Ride ride) {
+        Payment payment = this.paymentRepository.findByRide(ride)
+                .orElseThrow(() -> new ResourceNotFoundException("No payment found with this ride with ID " + ride.getId()));
+
         paymentStrategyManager.paymentStrategy(payment.getPaymentMethod()).processPayment(payment);
     }
 

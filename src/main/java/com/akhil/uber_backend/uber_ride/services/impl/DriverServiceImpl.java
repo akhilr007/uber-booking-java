@@ -107,8 +107,27 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
+    @Transactional
     public RideDTO endRide(Long rideId) {
-        return null;
+
+        Ride ride = this.rideService.getRideById(rideId);
+
+        Driver driver = getCurrentDriver();
+        if(!driver.equals(ride.getDriver())){
+            throw new RuntimeException("Driver cannot end the ride as he has not accepted it earlier");
+        }
+
+        if(!ride.getRideStatus().equals(RideStatus.ONGOING)){
+            throw new RuntimeException("Ride Status is not ONGOING hence cannot be ended, STATUS: " + ride.getRideStatus());
+        }
+
+        ride.setEndedAt(LocalDateTime.now());
+        Ride savedRide = this.rideService.updateRideStatus(ride, RideStatus.ENDED);
+        updateDriverAvailability(driver, true);
+
+        this.paymentService.processPayment(ride);
+
+        return this.modelMapper.map(savedRide, RideDTO.class);
     }
 
     @Override
