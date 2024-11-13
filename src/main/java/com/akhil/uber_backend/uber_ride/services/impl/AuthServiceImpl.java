@@ -49,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
         User savedUser = userRepository.save(user);
 
         riderService.createNewRider(user);
-        
+
         walletService.createNewWallet(savedUser);
 
         return modelMapper.map(savedUser, UserDTO.class);
