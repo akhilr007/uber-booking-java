@@ -1,9 +1,6 @@
 package com.akhil.uber_backend.uber_ride.advices;
 
-import com.akhil.uber_backend.uber_ride.exceptions.DriverNotAvailableException;
-import com.akhil.uber_backend.uber_ride.exceptions.ResourceNotFoundException;
-import com.akhil.uber_backend.uber_ride.exceptions.RideRequestException;
-import com.akhil.uber_backend.uber_ride.exceptions.RuntimeConflictException;
+import com.akhil.uber_backend.uber_ride.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -64,6 +61,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<?>> handleRideRequestException(RideRequestException exception){
         ApiError apiError = ApiError.builder()
                 .httpStatus(HttpStatus.CONFLICT)
+                .message(exception.getLocalizedMessage())
+                .build();
+        return buildErrorResponseEntity(apiError);
+    }
+
+    @ExceptionHandler(InsufficientAmountException.class)
+    public ResponseEntity<ApiResponse<?>> handleInsufficientAmountException(InsufficientAmountException exception){
+        ApiError apiError = ApiError.builder()
+                .httpStatus(HttpStatus.BAD_REQUEST)
                 .message(exception.getLocalizedMessage())
                 .build();
         return buildErrorResponseEntity(apiError);
