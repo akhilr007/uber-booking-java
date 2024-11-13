@@ -2,11 +2,12 @@ package com.akhil.uber_backend.uber_ride.strategies.impl;
 
 import com.akhil.uber_backend.uber_ride.enums.PaymentStatus;
 import com.akhil.uber_backend.uber_ride.enums.TransactionMethod;
+import com.akhil.uber_backend.uber_ride.exceptions.InsufficientAmountException;
 import com.akhil.uber_backend.uber_ride.models.Driver;
 import com.akhil.uber_backend.uber_ride.models.Payment;
 import com.akhil.uber_backend.uber_ride.models.Rider;
 import com.akhil.uber_backend.uber_ride.models.Wallet;
-import com.akhil.uber_backend.uber_ride.services.PaymentService;
+import com.akhil.uber_backend.uber_ride.repositories.PaymentRepository;
 import com.akhil.uber_backend.uber_ride.services.WalletService;
 import com.akhil.uber_backend.uber_ride.strategies.PaymentStrategy;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ import java.math.BigDecimal;
 public class WalletPaymentStrategy implements PaymentStrategy {
 
     private final WalletService walletService;
-    private final PaymentService paymentService;
+    private final PaymentRepository paymentRepository;
 
     @Override
     @Transactional
@@ -33,7 +34,7 @@ public class WalletPaymentStrategy implements PaymentStrategy {
         // top up rider wallet if necessary
         if(riderWallet.getBalance().compareTo(amountToBePaid) < 0){
             BigDecimal amountRequired = amountToBePaid.subtract(riderWallet.getBalance());
-            walletService.addMoneyToWallet(rider.getUser(), amountRequired, null, null, TransactionMethod.BANKING);
+            throw new InsufficientAmountException(String.format("Rs. %.2f amount is required for the ride payment. Add money to wallet", amountRequired));
         }
 
         walletService.deductMoneyFromWallet(
@@ -56,6 +57,7 @@ public class WalletPaymentStrategy implements PaymentStrategy {
                 TransactionMethod.RIDE
         );
 
-        this.paymentService.updatePaymentStatus(payment, PaymentStatus.CONFIRMED);
+        payment.setPaymentStatus(PaymentStatus.CONFIRMED);
+        paymentRepository.save(payment);
     }
 }
