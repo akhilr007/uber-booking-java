@@ -1,8 +1,10 @@
 package com.akhil.uber_backend.uber_ride.strategies.impl;
 
+import com.akhil.uber_backend.uber_ride.enums.PaymentStatus;
 import com.akhil.uber_backend.uber_ride.enums.TransactionMethod;
 import com.akhil.uber_backend.uber_ride.models.Driver;
 import com.akhil.uber_backend.uber_ride.models.Payment;
+import com.akhil.uber_backend.uber_ride.services.PaymentService;
 import com.akhil.uber_backend.uber_ride.services.WalletService;
 import com.akhil.uber_backend.uber_ride.strategies.PaymentStrategy;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import java.math.BigDecimal;
 public class CashPaymentStrategy implements PaymentStrategy {
 
     private final WalletService walletService;
+    private final PaymentService paymentService;
 
     @Override
     public void processPayment(Payment payment) {
@@ -29,5 +32,7 @@ public class CashPaymentStrategy implements PaymentStrategy {
                 null,
                 payment.getRide(),
                 TransactionMethod.RIDE);
+
+        this.paymentService.updatePaymentStatus(payment, PaymentStatus.CONFIRMED);
     }
 }

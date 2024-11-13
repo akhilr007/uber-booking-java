@@ -13,6 +13,7 @@ import com.akhil.uber_backend.uber_ride.models.Ride;
 import com.akhil.uber_backend.uber_ride.models.RideRequest;
 import com.akhil.uber_backend.uber_ride.repositories.DriverRepository;
 import com.akhil.uber_backend.uber_ride.services.DriverService;
+import com.akhil.uber_backend.uber_ride.services.PaymentService;
 import com.akhil.uber_backend.uber_ride.services.RideRequestService;
 import com.akhil.uber_backend.uber_ride.services.RideService;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class DriverServiceImpl implements DriverService {
     private final DriverRepository driverRepository;
     private final RideService rideService;
     private final ModelMapper modelMapper;
+    private final PaymentService paymentService;
 
     @Override
     @Transactional
@@ -98,6 +100,9 @@ public class DriverServiceImpl implements DriverService {
 
         ride.setStartedAt(LocalDateTime.now());
         Ride savedRide = this.rideService.updateRideStatus(ride, RideStatus.ONGOING);
+
+        this.paymentService.createNewPayment(savedRide);
+
         return modelMapper.map(savedRide, RideDTO.class);
     }
 
