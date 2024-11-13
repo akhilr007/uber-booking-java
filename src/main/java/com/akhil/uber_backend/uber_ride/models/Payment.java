@@ -3,8 +3,7 @@ package com.akhil.uber_backend.uber_ride.models;
 import com.akhil.uber_backend.uber_ride.enums.PaymentMethod;
 import com.akhil.uber_backend.uber_ride.enums.PaymentStatus;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
@@ -13,6 +12,9 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Payment {
 
     @Id
