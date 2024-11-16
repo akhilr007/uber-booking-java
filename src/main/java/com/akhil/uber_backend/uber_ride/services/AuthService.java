@@ -1,8 +1,7 @@
 package com.akhil.uber_backend.uber_ride.services;
 
-import com.akhil.uber_backend.uber_ride.dto.DriverDTO;
-import com.akhil.uber_backend.uber_ride.dto.SignupDTO;
-import com.akhil.uber_backend.uber_ride.dto.UserDTO;
+import com.akhil.uber_backend.uber_ride.dto.*;
+import com.akhil.uber_backend.uber_ride.models.Vehicle;
 
 public interface AuthService {
 
@@ -10,5 +9,5 @@ public interface AuthService {
 
     UserDTO signup(SignupDTO signupDTO);
 
-    DriverDTO onboardNewDriver(Long userId);
+    DriverDTO onboardNewDriver(Long userId, OnboardDriverDTO onboardDriverDTO);
 }
