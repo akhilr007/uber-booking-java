@@ -5,6 +5,7 @@ import com.akhil.uber_backend.uber_ride.services.DriverService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +55,8 @@ public class DriverController {
     @GetMapping("/get-my-rides")
     public ResponseEntity<Page<RideDTO>> getAllMyRides(@RequestParam(defaultValue = "0") Integer pageOffset,
                                               @RequestParam(defaultValue = "10", required = false) Integer pageSize){
-        PageRequest pageRequest = PageRequest.of(pageOffset, pageSize);
+        PageRequest pageRequest = PageRequest.of(pageOffset, pageSize,
+                Sort.by(Sort.Direction.DESC, "createdTime", "id"));
         return ResponseEntity.ok(this.driverService.getAllMyRides(pageRequest));
     }
 
