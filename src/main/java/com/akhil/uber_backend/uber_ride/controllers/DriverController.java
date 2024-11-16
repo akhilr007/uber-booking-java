@@ -1,9 +1,6 @@
 package com.akhil.uber_backend.uber_ride.controllers;
 
-import com.akhil.uber_backend.uber_ride.dto.RatingDTO;
-import com.akhil.uber_backend.uber_ride.dto.RideDTO;
-import com.akhil.uber_backend.uber_ride.dto.RideStartDTO;
-import com.akhil.uber_backend.uber_ride.dto.RiderDTO;
+import com.akhil.uber_backend.uber_ride.dto.*;
 import com.akhil.uber_backend.uber_ride.services.DriverService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,6 +41,12 @@ public class DriverController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(this.driverService.rateRider(ratingDTO.getRideId(), ratingDTO.getRating()));
+    }
+
+    @GetMapping("/get-my-profile")
+    public ResponseEntity<DriverDTO> getMyProfile(){
+        return ResponseEntity
+                .ok(this.driverService.getMyProfile());
     }
 
 }
