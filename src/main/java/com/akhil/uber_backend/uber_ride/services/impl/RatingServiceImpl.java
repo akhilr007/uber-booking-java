@@ -3,6 +3,7 @@ package com.akhil.uber_backend.uber_ride.services.impl;
 import com.akhil.uber_backend.uber_ride.dto.DriverDTO;
 import com.akhil.uber_backend.uber_ride.dto.RiderDTO;
 import com.akhil.uber_backend.uber_ride.exceptions.ResourceNotFoundException;
+import com.akhil.uber_backend.uber_ride.exceptions.RuntimeConflictException;
 import com.akhil.uber_backend.uber_ride.models.Driver;
 import com.akhil.uber_backend.uber_ride.models.Rating;
 import com.akhil.uber_backend.uber_ride.models.Ride;
@@ -34,6 +35,10 @@ public class RatingServiceImpl implements RatingService {
 
         Driver driver = ride.getDriver();
 
+        if(ratingObj.getDriverRating() != null){
+            throw new RuntimeConflictException("You cannot rate the driver again.");
+        }
+
         ratingObj.setDriverRating(rating);
         ratingRepository.save(ratingObj);
 
@@ -56,6 +61,9 @@ public class RatingServiceImpl implements RatingService {
                 .orElseThrow(() -> new ResourceNotFoundException("No ride found with ID " + ride.getId()));
 
         Rider rider = ride.getRider();
+        if(ratingObj.getRiderRating() != null){
+            throw new RuntimeConflictException("You cannot rate the rider again.");
+        }
 
         ratingObj.setRiderRating(rating);
         ratingRepository.save(ratingObj);
