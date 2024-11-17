@@ -52,4 +52,13 @@ public class RiderController {
         PageRequest pageRequest = PageRequest.of(pageOffset, pageSize);
         return ResponseEntity.ok(this.riderService.getAllMyRides(pageRequest));
     }
+
+    @PostMapping("/wallet/add-money/{userId}")
+    public ResponseEntity<WalletDTO> addMoneyToWallet(@PathVariable Long userId,
+                                                      @RequestBody AddMoneyDTO addMoneyDTO){
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(this.riderService.addMoneyToWallet(userId, addMoneyDTO.getAmount()));
+    }
+
 }

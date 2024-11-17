@@ -1,18 +1,16 @@
 package com.akhil.uber_backend.uber_ride.services.impl;
 
-import com.akhil.uber_backend.uber_ride.dto.DriverDTO;
-import com.akhil.uber_backend.uber_ride.dto.RideDTO;
-import com.akhil.uber_backend.uber_ride.dto.RideRequestDTO;
-import com.akhil.uber_backend.uber_ride.dto.RiderDTO;
+import com.akhil.uber_backend.uber_ride.dto.*;
 import com.akhil.uber_backend.uber_ride.enums.RideRequestStatus;
 import com.akhil.uber_backend.uber_ride.enums.RideStatus;
+import com.akhil.uber_backend.uber_ride.enums.TransactionMethod;
+import com.akhil.uber_backend.uber_ride.exceptions.ResourceNotFoundException;
 import com.akhil.uber_backend.uber_ride.models.*;
 import com.akhil.uber_backend.uber_ride.repositories.RideRequestRepository;
 import com.akhil.uber_backend.uber_ride.repositories.RiderRepository;
-import com.akhil.uber_backend.uber_ride.services.DriverService;
-import com.akhil.uber_backend.uber_ride.services.RatingService;
-import com.akhil.uber_backend.uber_ride.services.RideService;
-import com.akhil.uber_backend.uber_ride.services.RiderService;
+import com.akhil.uber_backend.uber_ride.repositories.UserRepository;
+import com.akhil.uber_backend.uber_ride.repositories.WalletRepository;
+import com.akhil.uber_backend.uber_ride.services.*;
 import com.akhil.uber_backend.uber_ride.strategies.RideStrategyManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +28,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class RiderServiceImpl implements RiderService {
+    private final WalletRepository walletRepository;
 
     private final ModelMapper modelMapper;
     private final RideStrategyManager rideStrategyManager;
@@ -38,6 +37,8 @@ public class RiderServiceImpl implements RiderService {
     private final RideService rideService;
     private final DriverService driverService;
     private final RatingService ratingService;
+    private final WalletService walletService;
+    private final UserRepository userRepository;
 
     @Override
     public Rider createNewRider(User user) {
@@ -129,5 +130,21 @@ public class RiderServiceImpl implements RiderService {
         // TODO : implement spring security
         // Temporary solution
         return this.riderRepository.findById(2L).orElse(null);
+    }
+
+    @Override
+    public WalletDTO addMoneyToWallet(Long userId, BigDecimal amount) {
+
+        User user = this.userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("No user found with this ID: " + userId));
+
+        Wallet wallet = this.walletService.addMoneyToWallet(
+                        user,
+                        amount,
+                        null,
+                        null,
+                        TransactionMethod.BANKING);
+
+        return modelMapper.map(wallet, WalletDTO.class);
     }
 }

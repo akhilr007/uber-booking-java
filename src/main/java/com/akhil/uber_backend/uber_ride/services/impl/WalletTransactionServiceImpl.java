@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 public class WalletTransactionServiceImpl implements WalletTransactionService {
 
     private final WalletTransactionRepository walletTransactionRepository;
-    private final ModelMapper modelMapper;
 
     @Override
     public void createNewWalletTransaction(WalletTransaction walletTransaction) {

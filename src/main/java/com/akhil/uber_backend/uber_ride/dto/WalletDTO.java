@@ -1,5 +1,6 @@
 package com.akhil.uber_backend.uber_ride.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.math.BigDecimal;
