@@ -10,6 +10,7 @@ import com.akhil.uber_backend.uber_ride.models.*;
 import com.akhil.uber_backend.uber_ride.repositories.RideRequestRepository;
 import com.akhil.uber_backend.uber_ride.repositories.RiderRepository;
 import com.akhil.uber_backend.uber_ride.services.DriverService;
+import com.akhil.uber_backend.uber_ride.services.RatingService;
 import com.akhil.uber_backend.uber_ride.services.RideService;
 import com.akhil.uber_backend.uber_ride.services.RiderService;
 import com.akhil.uber_backend.uber_ride.strategies.RideStrategyManager;
@@ -36,6 +37,7 @@ public class RiderServiceImpl implements RiderService {
     private final RiderRepository riderRepository;
     private final RideService rideService;
     private final DriverService driverService;
+    private final RatingService ratingService;
 
     @Override
     public Rider createNewRider(User user) {
@@ -93,7 +95,19 @@ public class RiderServiceImpl implements RiderService {
 
     @Override
     public DriverDTO rateDriver(Long rideId, Integer rating) {
-        return null;
+
+        Ride ride = this.rideService.getRideById(rideId);
+        Rider rider = getCurrentRider();
+
+        if(!rider.equals(ride.getRider())){
+            throw new RuntimeException("Rider is not owner of this ride");
+        }
+
+        if(!ride.getRideStatus().equals(RideStatus.ENDED)){
+            throw new RuntimeException("You cannot rate the ride as it has not ended");
+        }
+
+        return ratingService.rateDriver(ride, rating);
     }
 
     @Override

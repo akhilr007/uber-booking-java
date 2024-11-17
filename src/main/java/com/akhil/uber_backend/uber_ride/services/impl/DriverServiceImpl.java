@@ -12,10 +12,7 @@ import com.akhil.uber_backend.uber_ride.models.Driver;
 import com.akhil.uber_backend.uber_ride.models.Ride;
 import com.akhil.uber_backend.uber_ride.models.RideRequest;
 import com.akhil.uber_backend.uber_ride.repositories.DriverRepository;
-import com.akhil.uber_backend.uber_ride.services.DriverService;
-import com.akhil.uber_backend.uber_ride.services.PaymentService;
-import com.akhil.uber_backend.uber_ride.services.RideRequestService;
-import com.akhil.uber_backend.uber_ride.services.RideService;
+import com.akhil.uber_backend.uber_ride.services.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -36,6 +33,7 @@ public class DriverServiceImpl implements DriverService {
     private final RideService rideService;
     private final ModelMapper modelMapper;
     private final PaymentService paymentService;
+    private final RatingService ratingService;
 
     @Override
     @Transactional
@@ -102,6 +100,7 @@ public class DriverServiceImpl implements DriverService {
         Ride savedRide = this.rideService.updateRideStatus(ride, RideStatus.ONGOING);
 
         this.paymentService.createNewPayment(savedRide);
+        this.ratingService.createNewRating(savedRide);
 
         return modelMapper.map(savedRide, RideDTO.class);
     }
@@ -132,7 +131,19 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public RiderDTO rateRider(Long rideId, Integer rating) {
-        return null;
+
+        Ride ride = this.rideService.getRideById(rideId);
+        Driver driver = getCurrentDriver();
+
+        if(!driver.equals(ride.getDriver())){
+            throw new RuntimeException("Driver is not owner of this ride");
+        }
+
+        if(!ride.getRideStatus().equals(RideStatus.ENDED)){
+            throw new RuntimeException("You cannot rate the ride as it has not ended");
+        }
+
+        return ratingService.rateRider(ride, rating);
     }
 
     @Override

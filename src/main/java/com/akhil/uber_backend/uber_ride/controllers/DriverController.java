@@ -40,10 +40,11 @@ public class DriverController {
     }
 
     @PostMapping("/rateRider/{rideId}")
-    public ResponseEntity<RiderDTO> rateRider(@RequestBody RatingDTO ratingDTO){
+    public ResponseEntity<RiderDTO> rateRider(@PathVariable Long rideId,
+                                              @RequestBody RatingDTO ratingDTO){
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(this.driverService.rateRider(ratingDTO.getRideId(), ratingDTO.getRating()));
+                .body(this.driverService.rateRider(rideId, ratingDTO.getRating()));
     }
 
     @GetMapping("/get-my-profile")
