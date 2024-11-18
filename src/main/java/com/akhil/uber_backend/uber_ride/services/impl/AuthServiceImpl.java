@@ -17,6 +17,7 @@ import com.akhil.uber_backend.uber_ride.services.WalletService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +35,7 @@ public class AuthServiceImpl implements AuthService {
     private final RiderService riderService;
     private final WalletService walletService;
     private final DriverService driverService;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public String login(String email, String password) {
@@ -51,6 +53,7 @@ public class AuthServiceImpl implements AuthService {
 
         User user = modelMapper.map(signupDTO, User.class);
         user.setRoles(Set.of(Role.RIDER));
+        user.setPassword(passwordEncoder.encode(signupDTO.getPassword()));
 
         User savedUser = userRepository.save(user);
 
