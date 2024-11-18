@@ -1,6 +1,9 @@
 package com.akhil.uber_backend.uber_ride.controllers;
 
-import com.akhil.uber_backend.uber_ride.dto.*;
+import com.akhil.uber_backend.uber_ride.dto.DriverDTO;
+import com.akhil.uber_backend.uber_ride.dto.OnboardDriverDTO;
+import com.akhil.uber_backend.uber_ride.dto.SignupDTO;
+import com.akhil.uber_backend.uber_ride.dto.UserDTO;
 import com.akhil.uber_backend.uber_ride.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,15 +18,15 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    ResponseEntity<UserDTO> signUp(@RequestBody SignupDTO signupDTO){
+    ResponseEntity<UserDTO> signUp(@RequestBody SignupDTO signupDTO) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                        .body(authService.signup(signupDTO));
+                .body(authService.signup(signupDTO));
     }
 
     @PostMapping("/onboard-new-driver/{userId}")
     ResponseEntity<DriverDTO> onboardNewDriver(@PathVariable Long userId,
-                                               @RequestBody OnboardDriverDTO onboardDriverDTO){
+                                               @RequestBody OnboardDriverDTO onboardDriverDTO) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(authService.onboardNewDriver(userId, onboardDriverDTO));

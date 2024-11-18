@@ -54,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
 
         User savedUser = userRepository.save(user);
 
-        riderService.createNewRider(user);
+        riderService.createNewRider(savedUser);
 
         walletService.createNewWallet(savedUser);
 
