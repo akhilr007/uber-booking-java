@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -82,8 +83,8 @@ public class GlobalExceptionHandler {
         return buildErrorResponseEntity(apiError);
     }
 
-    @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
-    public ResponseEntity<ApiResponse<?>> handleAuthenticationCredentialsNotFoundException(AuthenticationCredentialsNotFoundException exception){
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiResponse<?>> handleAuthenticationCredentialsNotFoundException(AuthenticationException exception){
         ApiError apiError = ApiError.builder()
                 .httpStatus(HttpStatus.UNAUTHORIZED)
                 .message(exception.getMessage())
