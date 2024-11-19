@@ -2,6 +2,7 @@ package com.akhil.uber_backend.uber_ride.controllers;
 
 import com.akhil.uber_backend.uber_ride.dto.*;
 import com.akhil.uber_backend.uber_ride.services.AuthService;
+import com.akhil.uber_backend.uber_ride.services.SessionService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,6 +22,7 @@ import java.util.Arrays;
 public class AuthController {
 
     private final AuthService authService;
+    private final SessionService sessionService;
 
     @PostMapping("/signup")
     public ResponseEntity<UserDTO> signUp(@RequestBody SignupDTO signupDTO) {
@@ -46,15 +48,34 @@ public class AuthController {
         return ResponseEntity.ok(loginResponseDTO);
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<LogoutDTO> logout(HttpServletRequest request, HttpServletResponse response){
+        String refreshToken = getRefreshTokenFromCookie(request);
+
+        sessionService.deleteSessionByToken(refreshToken);
+
+        Cookie accessToken = new Cookie("accessToken", null);
+        accessToken.setMaxAge(0);
+        accessToken.setHttpOnly(true);
+        response.addCookie(accessToken);
+
+        Cookie refreshTokenCookie = new Cookie("refreshToken", null);
+        refreshTokenCookie.setMaxAge(0);
+        refreshTokenCookie.setHttpOnly(true);
+        response.addCookie(refreshTokenCookie);
+
+        return ResponseEntity.ok(
+                LogoutDTO.builder()
+                        .message("Logged out successfully")
+                        .success(true)
+                        .build()
+        );
+
+    }
+
     @PostMapping("/refresh")
     public ResponseEntity<LoginResponseDTO> refreshToken(HttpServletRequest request){
-        String refreshToken = Arrays.stream(request.getCookies())
-                .filter(cookie -> "refreshToken".equals(cookie.getName()))
-                .findFirst()
-                .map(Cookie::getValue)
-                .orElseThrow(() -> new AuthenticationServiceException("Refresh Token not found in cookies"));
-
-        LoginResponseDTO loginResponseDTO = authService.refreshToken(refreshToken);
+        LoginResponseDTO loginResponseDTO = authService.refreshToken(getRefreshTokenFromCookie(request));
         return ResponseEntity.ok(loginResponseDTO);
 
     }
@@ -66,5 +87,13 @@ public class AuthController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(authService.onboardNewDriver(userId, onboardDriverDTO));
+    }
+
+    private String getRefreshTokenFromCookie(HttpServletRequest request){
+        return  Arrays.stream(request.getCookies())
+                .filter(cookie -> "refreshToken".equals(cookie.getName()))
+                .findFirst()
+                .map(Cookie::getValue)
+                .orElseThrow(() -> new AuthenticationServiceException("Refresh Token not found in cookies"));
     }
 }

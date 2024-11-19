@@ -10,10 +10,7 @@ import com.akhil.uber_backend.uber_ride.models.Vehicle;
 import com.akhil.uber_backend.uber_ride.repositories.UserRepository;
 import com.akhil.uber_backend.uber_ride.repositories.VehicleRepository;
 import com.akhil.uber_backend.uber_ride.securities.JwtService;
-import com.akhil.uber_backend.uber_ride.services.AuthService;
-import com.akhil.uber_backend.uber_ride.services.DriverService;
-import com.akhil.uber_backend.uber_ride.services.RiderService;
-import com.akhil.uber_backend.uber_ride.services.WalletService;
+import com.akhil.uber_backend.uber_ride.services.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -41,6 +38,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final SessionService sessionService;
 
     @Override
     public LoginResponseDTO login(String email, String password) {
@@ -53,6 +51,7 @@ public class AuthServiceImpl implements AuthService {
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 
+        sessionService.generateNewSession(user, refreshToken);
 
         return LoginResponseDTO.builder()
                 .accessToken(accessToken)
@@ -64,6 +63,9 @@ public class AuthServiceImpl implements AuthService {
     public LoginResponseDTO refreshToken(String refreshToken) {
 
         Long userId = jwtService.getUserIdFromToken(refreshToken);
+
+        sessionService.validateSession(refreshToken);
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("No user found with ID" + userId));
 
