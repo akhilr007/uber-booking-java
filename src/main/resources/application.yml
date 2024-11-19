@@ -17,4 +17,4 @@ spring:
     init:
       mode: always
       data-locations: classpath:data.sql
-
+JWT_SECRET_KEY: ${JWT_SECRET_KEY}

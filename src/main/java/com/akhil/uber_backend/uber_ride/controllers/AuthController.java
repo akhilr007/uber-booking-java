@@ -1,10 +1,9 @@
 package com.akhil.uber_backend.uber_ride.controllers;
 
-import com.akhil.uber_backend.uber_ride.dto.DriverDTO;
-import com.akhil.uber_backend.uber_ride.dto.OnboardDriverDTO;
-import com.akhil.uber_backend.uber_ride.dto.SignupDTO;
-import com.akhil.uber_backend.uber_ride.dto.UserDTO;
+import com.akhil.uber_backend.uber_ride.dto.*;
 import com.akhil.uber_backend.uber_ride.services.AuthService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +21,23 @@ public class AuthController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(authService.signup(signupDTO));
+    }
+
+    @PostMapping("/login")
+    ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO, HttpServletResponse response){
+
+        LoginResponseDTO loginResponseDTO = authService
+                .login(loginRequestDTO.getEmail(), loginRequestDTO.getPassword());
+
+        Cookie accessToken = new Cookie("accessToken", loginResponseDTO.getAccessToken());
+        accessToken.setHttpOnly(true);
+        response.addCookie(accessToken);
+
+        Cookie refreshToken = new Cookie("refreshToken", loginResponseDTO.getRefreshToken());
+        refreshToken.setHttpOnly(true);
+        response.addCookie(refreshToken);
+
+        return ResponseEntity.ok(loginResponseDTO);
     }
 
     @PostMapping("/onboard-new-driver/{userId}")
