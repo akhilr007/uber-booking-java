@@ -61,6 +61,20 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public LoginResponseDTO refreshToken(String refreshToken) {
+
+        Long userId = jwtService.getUserIdFromToken(refreshToken);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("No user found with ID" + userId));
+
+        String accessToken = jwtService.generateAccessToken(user);
+        return LoginResponseDTO.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    @Override
     @Transactional
     public UserDTO signup(SignupDTO signupDTO) {
 

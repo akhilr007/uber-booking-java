@@ -6,6 +6,8 @@ public interface AuthService {
 
     LoginResponseDTO login(String email, String password);
 
+    LoginResponseDTO refreshToken(String refreshToken);
+
     UserDTO signup(SignupDTO signupDTO);
 
     DriverDTO onboardNewDriver(Long userId, OnboardDriverDTO onboardDriverDTO);
