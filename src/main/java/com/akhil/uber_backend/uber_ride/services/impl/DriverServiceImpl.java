@@ -11,12 +11,14 @@ import com.akhil.uber_backend.uber_ride.exceptions.RideRequestException;
 import com.akhil.uber_backend.uber_ride.models.Driver;
 import com.akhil.uber_backend.uber_ride.models.Ride;
 import com.akhil.uber_backend.uber_ride.models.RideRequest;
+import com.akhil.uber_backend.uber_ride.models.User;
 import com.akhil.uber_backend.uber_ride.repositories.DriverRepository;
 import com.akhil.uber_backend.uber_ride.services.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -162,8 +164,9 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public Driver getCurrentDriver() {
-        return this.driverRepository.findById(1L)
-                .orElseThrow(() -> new ResourceNotFoundException("Current driver not found"));
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return this.driverRepository.findByUser(user)
+                .orElseThrow(() -> new ResourceNotFoundException("Driver not associated with user with ID: " + user.getId()));
     }
 
     @Override

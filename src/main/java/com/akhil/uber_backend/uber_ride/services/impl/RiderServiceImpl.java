@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -127,16 +128,17 @@ public class RiderServiceImpl implements RiderService {
 
     @Override
     public Rider getCurrentRider() {
-        // TODO : implement spring security
-        // Temporary solution
-        return this.riderRepository.findById(2L).orElse(null);
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return this.riderRepository.findByUser(user).orElseThrow(
+                () -> new ResourceNotFoundException(String.format("Rider not associated with ID: %d", user.getId()))
+        );
     }
 
     @Override
     public WalletDTO addMoneyToWallet(Long userId, BigDecimal amount) {
 
         User user = this.userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("No user found with this ID: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("No user found with user with ID: " + userId));
 
         Wallet wallet = this.walletService.addMoneyToWallet(
                         user,
