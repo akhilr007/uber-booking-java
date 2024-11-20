@@ -17,4 +17,15 @@ spring:
     init:
       mode: always
       data-locations: classpath:data.sql
+  mail:
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 JWT_SECRET_KEY: ${JWT_SECRET_KEY}
