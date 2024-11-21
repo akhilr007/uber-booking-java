@@ -24,5 +24,5 @@ public interface RiderService {
 
     Rider getCurrentRider();
 
-    WalletDTO addMoneyToWallet(Long userId, BigDecimal amount);
+    WalletDTO addMoneyToWallet(BigDecimal amount);
 }

@@ -135,10 +135,9 @@ public class RiderServiceImpl implements RiderService {
     }
 
     @Override
-    public WalletDTO addMoneyToWallet(Long userId, BigDecimal amount) {
+    public WalletDTO addMoneyToWallet(BigDecimal amount) {
 
-        User user = this.userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("No user found with user with ID: " + userId));
+        User user = getCurrentRider().getUser();
 
         Wallet wallet = this.walletService.addMoneyToWallet(
                         user,
